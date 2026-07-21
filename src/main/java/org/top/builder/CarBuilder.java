@@ -14,6 +14,17 @@ public class CarBuilder {
     private double price;
     private boolean isNew;
 
+    public static CarBuilder from(Car car) {
+        return new CarBuilder()
+                .setBrand(car.getBrand())
+                .setModel(car.getModel())
+                .setYear(car.getYear())
+                .setColor(car.getColor())
+                .setPower(car.getPower())
+                .setPrice(car.getPrice())
+                .setIsNew(car.isNew());
+    }
+
     public CarBuilder setBrand(String brand) {
         this.brand = brand;
         return this;
