@@ -24,10 +24,21 @@ public class Main {
         System.out.println("___Исходный список___");
         cars.forEach(System.out::println);
 
-        System.out.println("___Отсортированный список___");
+        System.out.println("___Отсортированный список по мощности___");
+        cars.stream()
+                .sorted(CarComparator.BY_POWER)
+                .forEach(System.out::println);
+
+        System.out.println("___Отсортированный список старых по году по убыванию___");
         cars.stream()
                 .filter(car -> !car.isNew())
                 .sorted(CarComparator.BY_YEAR.reversed())//можно прям в стриме вызывать, если нужен другой порядок
+                .forEach(System.out::println);
+
+        System.out.println("___Отсортированный список новых по бренду/цене___");
+        cars.stream()
+                .filter(Car::isNew)
+                .sorted(CarComparator.BY_BRAND.thenComparing(CarComparator.BY_PRICE))
                 .forEach(System.out::println);
     }
 }
