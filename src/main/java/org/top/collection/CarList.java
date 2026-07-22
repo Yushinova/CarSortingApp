@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.NoSuchElementException;
 
 import org.top.model.Car;
 
@@ -22,6 +23,12 @@ public class CarList implements List<Car> {
         this.cars = new Car[START_SIZE];
         this.lastIndex = -1;
         this.shift = 0;
+    }
+
+    private void checkIndex(int index) {
+        if (index < 0 || index > lastIndex)
+            throw new IndexOutOfBoundsException(String.format("Индекс: %d, размер коллекции: %d",
+                    index, this.size()));
     }
 
     @Override
@@ -48,14 +55,34 @@ public class CarList implements List<Car> {
 
     @Override
     public Iterator<Car> iterator() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'iterator'");
+        return new CarIterator();
     }
 
+    private class CarIterator implements Iterator<Car> {
+        private int cursor = -1;
+
+        @Override
+        public boolean hasNext() {
+            return cursor < lastIndex;
+        }
+
+        @Override
+        public Car next() {
+            if (!this.hasNext())
+                throw new NoSuchElementException("Машины в списке закончились");
+            return cars[cursor++];
+        }
+    }
+
+    @SuppressWarnings("unchecked")
     @Override
     public <T> T[] toArray(T[] a) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'toArray'");
+        if (a.length < lastIndex)
+            return (T[]) Arrays.copyOf(cars, this.lastIndex, a.getClass());
+        System.arraycopy(cars, 0, a, 0, this.lastIndex);
+        if (this.lastIndex > -1 && a.length > this.lastIndex)
+            a[this.lastIndex + 1] = null;
+        return a;
     }
 
     @Override
@@ -72,34 +99,43 @@ public class CarList implements List<Car> {
     @Override
     public boolean remove(Object o) {
         int index = this.indexOf(o);
-        if (index >= 0) {
+        if (index >= 0)
             this.remove(index);
-        }
         return this.contains(o);
     }
 
     @Override
     public boolean containsAll(Collection<?> c) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'containsAll'");
+        for (Object car : c)
+            if (!this.contains(car))
+                return false;
+        return true;
     }
 
     @Override
     public boolean addAll(Collection<? extends Car> c) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'addAll'");
+        if (c.isEmpty())
+            return false;
+        for (Car car : c)
+            this.add(car);
+        return true;
     }
 
     @Override
     public boolean addAll(int index, Collection<? extends Car> c) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'addAll'");
+        this.checkIndex(index);
+        if (c.isEmpty())
+            return false;
+        return true;
     }
 
     @Override
     public boolean removeAll(Collection<?> c) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'removeAll'");
+        if (c.isEmpty())
+            return false;
+        for (Object car : c)
+            remove(car);
+        return true;
     }
 
     @Override
@@ -115,65 +151,55 @@ public class CarList implements List<Car> {
 
     @Override
     public Car get(int index) {
-        if (index >= 0 && index <= lastIndex) {
-            return cars[index];
-        }
-        return null;
+        this.checkIndex(index);
+        return cars[index];
     }
 
     @Override
     public Car set(int index, Car element) {
         Car result = null;
-        if (index >= 0 && index <= lastIndex) {
-            result = cars[index];
-            cars[index] = element;
-        }
+        this.checkIndex(index);
+        result = cars[index];
+        cars[index] = element;
         return result;
     }
 
     @Override
     public void add(int index, Car element) {
         // Проверить
-        if (index >= 0 && index <= lastIndex) {
-            cars[index] = element;
-        }
+        this.checkIndex(index);
+        cars[index] = element;
     }
 
     @Override
     public Car remove(int index) {
         Car result = null;
-        if (index >= 0 && index <= lastIndex) {
-            result = cars[index];
-            cars[index] = null;
-            for (int i = index; i <= lastIndex; i++) {
-                cars[i] = cars[i + 1];
-            }
-            lastIndex--;
-            if (shift > 0 && lastIndex < (START_SIZE << (shift - 1))) {
-                shift--;
-                cars = Arrays.copyOf(cars, START_SIZE << shift);
-            }
+        this.checkIndex(index);
+        result = cars[index];
+        cars[index] = null;
+        for (int i = index; i <= lastIndex; i++)
+            cars[i] = cars[i + 1];
+        lastIndex--;
+        if (shift > 0 && lastIndex < (START_SIZE << (shift - 1))) {
+            shift--;
+            cars = Arrays.copyOf(cars, START_SIZE << shift);
         }
         return result;
     }
 
     @Override
     public int indexOf(Object o) {
-        for (int i = 0; i <= lastIndex; i++) {
-            if (cars[i].equals(o)) {
+        for (int i = 0; i <= lastIndex; i++)
+            if (cars[i].equals(o))
                 return i;
-            }
-        }
         return -1;
     }
 
     @Override
     public int lastIndexOf(Object o) {
-        for (int i = lastIndex; i >= 0; i--) {
-            if (cars[i].equals(o)) {
+        for (int i = lastIndex; i >= 0; i--)
+            if (cars[i].equals(o))
                 return i;
-            }
-        }
         return -1;
     }
 
@@ -191,12 +217,8 @@ public class CarList implements List<Car> {
 
     @Override
     public List<Car> subList(int fromIndex, int toIndex) {
-        if (fromIndex < 0 || fromIndex > lastIndex || fromIndex > toIndex) {
-
-        }
-        if (toIndex < 0 || toIndex > lastIndex || toIndex < toIndex) {
-
-        }
+        this.checkIndex(fromIndex);
+        this.checkIndex(toIndex);
         return List.of(Arrays.copyOfRange(cars, fromIndex, toIndex));
     }
 
