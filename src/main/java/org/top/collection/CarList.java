@@ -142,17 +142,14 @@ public class CarList implements List<Car> {
         this.checkIndex(index);
         if (c.isEmpty())
             return false;
-        Car[] tmpCar = new Car[this.size() - index];
-        System.arraycopy(cars, index, tmpCar, index, index);
+        lastIndex += c.size();
+        resize(lastIndex);
+        System.arraycopy(cars, index, cars, index + c.size(), lastIndex - index);
+
         for (Car car : c) {
-            if (index <= this.lastIndex) {
-                this.set(index, car);
-                index++;
-            } else
-                this.add(car);
+            cars[index] = car;
+            index++;
         }
-        for (Car car : tmpCar)
-            this.add(car);
         return true;
     }
 
