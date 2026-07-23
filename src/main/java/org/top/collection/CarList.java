@@ -13,7 +13,14 @@ public class CarList implements List<Car> {
     private final int START_SIZE = 8;
     private Car[] cars;
     private int lastIndex;
-    private int shift = 0;
+
+    public int getInnerSize() {
+        return this.cars.length;
+    }
+
+    public int getLastIndex() {
+        return this.lastIndex;
+    }
 
     public CarList() {
         this.init();
@@ -22,7 +29,6 @@ public class CarList implements List<Car> {
     private void init() {
         this.cars = new Car[START_SIZE];
         this.lastIndex = -1;
-        this.shift = 0;
     }
 
     private void checkIndex(int index) {
@@ -70,7 +76,7 @@ public class CarList implements List<Car> {
         public Car next() {
             if (!this.hasNext())
                 throw new NoSuchElementException("Машины в списке закончились");
-            return cars[cursor++];
+            return cars[++cursor];
         }
     }
 
@@ -79,27 +85,29 @@ public class CarList implements List<Car> {
     public <T> T[] toArray(T[] a) {
         if (a.length < lastIndex)
             return (T[]) Arrays.copyOf(cars, this.lastIndex, a.getClass());
-        System.arraycopy(cars, 0, a, 0, this.lastIndex);
+        System.arraycopy(cars, 0, a, 0, this.size());
         if (this.lastIndex > -1 && a.length > this.lastIndex)
             a[this.lastIndex + 1] = null;
         return a;
     }
 
-    private void resize() {
-        if (lastIndex >= cars.length) {
-            shift++;
-            cars = Arrays.copyOf(cars, START_SIZE << shift);
+    private void resize(int newLastIndex) {
+        int newShift = 0;
+        int newSize = START_SIZE;
+        while (newLastIndex >= newSize) {
+            newShift++;
+            newSize = START_SIZE << newShift;
         }
-        // if (lastIndex >= cars.length) {
-        // shift++;
-        // cars = Arrays.copyOf(cars, START_SIZE << shift);
-        // }
+        // System.out.println(
+        // String.format("newSize: %d, carsLength: %d, newLastIndex: %d", newSize,
+        // cars.length, newLastIndex));
+        if (newSize != cars.length)
+            cars = Arrays.copyOf(cars, newSize);
     }
 
     @Override
     public boolean add(Car e) {
-        this.resize();
-        lastIndex++;
+        this.resize(++lastIndex);
         cars[lastIndex] = e;
         return this.contains(e);
     }
@@ -191,8 +199,7 @@ public class CarList implements List<Car> {
     @Override
     public void add(int index, Car element) {
         this.checkIndex(index);
-        lastIndex++;
-        resize();
+        resize(++lastIndex);
         System.arraycopy(cars, index, cars, index + 1, lastIndex - index);
         cars[index] = element;
     }
@@ -202,14 +209,10 @@ public class CarList implements List<Car> {
         Car result = null;
         this.checkIndex(index);
         result = cars[index];
-        cars[index] = null;
-        for (int i = index; i <= lastIndex; i++)
+        for (int i = index; i < lastIndex; i++)
             cars[i] = cars[i + 1];
-        lastIndex--;
-        if (shift > 0 && lastIndex < (START_SIZE << (shift - 1))) {
-            shift--;
-            cars = Arrays.copyOf(cars, START_SIZE << shift);
-        }
+        cars[lastIndex] = null;
+        resize(--lastIndex);
         return result;
     }
 
