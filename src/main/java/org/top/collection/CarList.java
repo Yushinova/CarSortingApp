@@ -26,9 +26,9 @@ public class CarList implements List<Car> {
     }
 
     private void checkIndex(int index) {
-        if (index < 0 || index > lastIndex)
-            throw new IndexOutOfBoundsException(String.format("Индекс: %d, размер коллекции: %d",
-                    index, this.size()));
+        if (index < 0 || index > this.lastIndex)
+            throw new IndexOutOfBoundsException(String.format("Индекс: %d, размер коллекции: %d, последний индекс: %d",
+                    index, this.size(), this.lastIndex));
     }
 
     @Override
@@ -85,12 +85,20 @@ public class CarList implements List<Car> {
         return a;
     }
 
-    @Override
-    public boolean add(Car e) {
+    private void resize() {
         if (lastIndex >= cars.length) {
             shift++;
             cars = Arrays.copyOf(cars, START_SIZE << shift);
         }
+        // if (lastIndex >= cars.length) {
+        // shift++;
+        // cars = Arrays.copyOf(cars, START_SIZE << shift);
+        // }
+    }
+
+    @Override
+    public boolean add(Car e) {
+        this.resize();
         lastIndex++;
         cars[lastIndex] = e;
         return this.contains(e);
@@ -126,6 +134,17 @@ public class CarList implements List<Car> {
         this.checkIndex(index);
         if (c.isEmpty())
             return false;
+        Car[] tmpCar = new Car[this.size() - index];
+        System.arraycopy(cars, index, tmpCar, index, index);
+        for (Car car : c) {
+            if (index <= this.lastIndex) {
+                this.set(index, car);
+                index++;
+            } else
+                this.add(car);
+        }
+        for (Car car : tmpCar)
+            this.add(car);
         return true;
     }
 
@@ -140,8 +159,13 @@ public class CarList implements List<Car> {
 
     @Override
     public boolean retainAll(Collection<?> c) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'retainAll'");
+        boolean modified = false;
+        for (Car car : cars)
+            if (!c.contains(car)) {
+                this.remove(car);
+                modified = true;
+            }
+        return modified;
     }
 
     @Override
@@ -166,8 +190,10 @@ public class CarList implements List<Car> {
 
     @Override
     public void add(int index, Car element) {
-        // Проверить
         this.checkIndex(index);
+        lastIndex++;
+        resize();
+        System.arraycopy(cars, index, cars, index + 1, lastIndex - index);
         cars[index] = element;
     }
 
@@ -205,14 +231,82 @@ public class CarList implements List<Car> {
 
     @Override
     public ListIterator<Car> listIterator() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'listIterator'");
+        return new CarListIterator(0);
     }
 
     @Override
     public ListIterator<Car> listIterator(int index) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'listIterator'");
+        return new CarListIterator(index);
+    }
+
+    private class CarListIterator implements ListIterator<Car> {
+        private int cursor;
+        private int lastCursor = -1;
+
+        public CarListIterator(int index) {
+            checkIndex(index);
+            this.cursor = index;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return this.cursor < lastIndex;
+        }
+
+        @Override
+        public Car next() {
+            if (!hasNext())
+                throw new NoSuchElementException();
+            lastCursor = cursor;
+            return cars[cursor++];
+        }
+
+        @Override
+        public boolean hasPrevious() {
+            return cursor > 0;
+        }
+
+        @Override
+        public Car previous() {
+            if (!hasPrevious())
+                throw new NoSuchElementException();
+            lastCursor = --cursor;
+            return cars[cursor];
+        }
+
+        @Override
+        public int nextIndex() {
+            return cursor;
+        }
+
+        @Override
+        public int previousIndex() {
+            return cursor - 1;
+        }
+
+        @Override
+        public void remove() {
+            if (lastCursor < 0)
+                throw new IllegalThreadStateException();
+            CarList.this.remove(lastIndex);
+            cursor = lastCursor;
+            lastCursor = -1;
+        }
+
+        @Override
+        public void set(Car e) {
+            if (lastCursor < 0)
+                throw new IllegalStateException();
+            cars[lastCursor] = e;
+        }
+
+        @Override
+        public void add(Car e) {
+            int i = cursor;
+            CarList.this.add(i, e);
+            cursor = i + 1;
+            lastCursor = -1;
+        }
     }
 
     @Override
