@@ -2,10 +2,12 @@ package org.top.collection;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 import org.top.model.Car;
 
@@ -33,6 +35,12 @@ public class CarList implements List<Car> {
 
     private void checkIndex(int index) {
         if (index < 0 || index > this.lastIndex)
+            throw new IndexOutOfBoundsException(String.format("Индекс: %d, размер коллекции: %d, последний индекс: %d",
+                    index, this.size(), this.lastIndex));
+    }
+
+    private void checkIndexAdd(int index) {
+        if (index < 0 || index > this.lastIndex + 1)
             throw new IndexOutOfBoundsException(String.format("Индекс: %d, размер коллекции: %d, последний индекс: %d",
                     index, this.size(), this.lastIndex));
     }
@@ -65,26 +73,26 @@ public class CarList implements List<Car> {
     }
 
     private class CarIterator implements Iterator<Car> {
-        private int cursor = -1;
+        private int cursor = 0;
 
         @Override
         public boolean hasNext() {
-            return cursor < lastIndex;
+            return cursor <= lastIndex;
         }
 
         @Override
         public Car next() {
             if (!this.hasNext())
                 throw new NoSuchElementException("Машины в списке закончились");
-            return cars[++cursor];
+            return cars[cursor++];
         }
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public <T> T[] toArray(T[] a) {
-        if (a.length < lastIndex)
-            return (T[]) Arrays.copyOf(cars, this.lastIndex, a.getClass());
+        if (a.length < size())
+            return (T[]) Arrays.copyOf(cars, size(), a.getClass());
         System.arraycopy(cars, 0, a, 0, this.size());
         if (this.lastIndex > -1 && a.length > this.lastIndex)
             a[this.lastIndex + 1] = null;
@@ -98,9 +106,6 @@ public class CarList implements List<Car> {
             newShift++;
             newSize = START_SIZE << newShift;
         }
-        // System.out.println(
-        // String.format("newSize: %d, carsLength: %d, newLastIndex: %d", newSize,
-        // cars.length, newLastIndex));
         if (newSize != cars.length)
             cars = Arrays.copyOf(cars, newSize);
     }
@@ -109,7 +114,7 @@ public class CarList implements List<Car> {
     public boolean add(Car e) {
         this.resize(++lastIndex);
         cars[lastIndex] = e;
-        return this.contains(e);
+        return true;
     }
 
     @Override
@@ -117,7 +122,7 @@ public class CarList implements List<Car> {
         int index = this.indexOf(o);
         if (index >= 0)
             this.remove(index);
-        return this.contains(o);
+        return index >= 0;
     }
 
     @Override
@@ -139,12 +144,14 @@ public class CarList implements List<Car> {
 
     @Override
     public boolean addAll(int index, Collection<? extends Car> c) {
-        this.checkIndex(index);
+        this.checkIndexAdd(index);
         if (c.isEmpty())
             return false;
+        int numMoved = lastIndex + 1 - index;
         lastIndex += c.size();
         resize(lastIndex);
-        System.arraycopy(cars, index, cars, index + c.size(), lastIndex - index);
+        if (numMoved > 0)
+            System.arraycopy(cars, index, cars, index + c.size(), numMoved);
 
         for (Car car : c) {
             cars[index] = car;
@@ -165,9 +172,9 @@ public class CarList implements List<Car> {
     @Override
     public boolean retainAll(Collection<?> c) {
         boolean modified = false;
-        for (Car car : cars)
-            if (!c.contains(car)) {
-                this.remove(car);
+        for (int i = lastIndex; i >= 0; i--)
+            if (!c.contains(cars[i])) {
+                this.remove(cars[i]);
                 modified = true;
             }
         return modified;
@@ -195,7 +202,7 @@ public class CarList implements List<Car> {
 
     @Override
     public void add(int index, Car element) {
-        this.checkIndex(index);
+        this.checkIndexAdd(index);
         resize(++lastIndex);
         System.arraycopy(cars, index, cars, index + 1, lastIndex - index);
         cars[index] = element;
@@ -216,7 +223,7 @@ public class CarList implements List<Car> {
     @Override
     public int indexOf(Object o) {
         for (int i = 0; i <= lastIndex; i++)
-            if (cars[i].equals(o))
+            if (Objects.equals(cars[i], o))
                 return i;
         return -1;
     }
@@ -224,7 +231,7 @@ public class CarList implements List<Car> {
     @Override
     public int lastIndexOf(Object o) {
         for (int i = lastIndex; i >= 0; i--)
-            if (cars[i].equals(o))
+            if (Objects.equals(cars[i], o))
                 return i;
         return -1;
     }
@@ -244,13 +251,13 @@ public class CarList implements List<Car> {
         private int lastCursor = -1;
 
         public CarListIterator(int index) {
-            checkIndex(index);
+            checkIndexAdd(index);
             this.cursor = index;
         }
 
         @Override
         public boolean hasNext() {
-            return this.cursor < lastIndex;
+            return this.cursor <= lastIndex;
         }
 
         @Override
@@ -287,8 +294,8 @@ public class CarList implements List<Car> {
         @Override
         public void remove() {
             if (lastCursor < 0)
-                throw new IllegalThreadStateException();
-            CarList.this.remove(lastIndex);
+                throw new IllegalStateException();
+            CarList.this.remove(lastCursor);
             cursor = lastCursor;
             lastCursor = -1;
         }
@@ -312,8 +319,15 @@ public class CarList implements List<Car> {
     @Override
     public List<Car> subList(int fromIndex, int toIndex) {
         this.checkIndex(fromIndex);
-        this.checkIndex(toIndex);
+        this.checkIndexAdd(toIndex);
         return List.of(Arrays.copyOfRange(cars, fromIndex, toIndex));
     }
 
+    // @SuppressWarnings("unchecked")
+    // @Override
+    // public void sort(Comparator<? super E> c) {
+    // // Временное решение: сортируем только заполненную часть массива стандартными
+    // средствами Java
+    // Arrays.sort((E[]) cars, 0, lastIndex + 1, c);
+    // }
 }
