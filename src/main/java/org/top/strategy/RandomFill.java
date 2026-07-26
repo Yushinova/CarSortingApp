@@ -5,6 +5,7 @@ import org.top.model.Car;
 import org.top.model.CarPreset;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -31,7 +32,7 @@ public class RandomFill implements FillStrategy {
                     return car;
                 })
                 .limit(size)
-                .filter(car -> car != null) // ← защита от null
+                .filter(Objects::nonNull)
                 .collect(Collectors.toList());
 
         list.addAll(generated);
