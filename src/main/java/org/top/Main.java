@@ -3,14 +3,33 @@ package org.top;
 import org.top.builder.CarBuilder;
 import org.top.comparator.CarComparator;
 import org.top.model.Car;
+import org.top.strategy.FillStrategy;
+import org.top.strategy.ManualFill;
+import org.top.strategy.RandomFill;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
     public static void main(String[] args) {
+        //Fill ManualList TEST
+/*
+        List<Car> carsManual = new ArrayList<>();
+        Scanner scanner = new Scanner(System.in);
+        FillStrategy strategyManual = new ManualFill(scanner);
+        strategyManual.fill(carsManual, 2);
+        scanner.close();
+*/
+        // Fill RandomList TEST
+/*
+        List<Car> carsRandom = new ArrayList<>();
+        FillStrategy strategyRandom = new RandomFill();
+        strategyRandom.fill(carsRandom, 3);
+*/
+
         List<Car> cars = new ArrayList<>();
         cars.add(new Car("Toyota", "Camry", 2020, "Red", 200, 30000, false));
         cars.add(new Car("BMW", "X5", 2022, "Black", 250, 45000, true));
