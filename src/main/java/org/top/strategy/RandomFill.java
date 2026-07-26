@@ -20,7 +20,7 @@ public class RandomFill implements FillStrategy {
 
         List<Car> generated = Stream.generate(() -> {
                     CarPreset preset = presets[random.nextInt(presets.length)];
-                    Car car = new CarBuilder()
+                    return new CarBuilder()
                             .setBrand(preset.getBrand())
                             .setModel(preset.getModel())
                             .setYear(preset.getYear())
@@ -29,7 +29,6 @@ public class RandomFill implements FillStrategy {
                             .setPrice(preset.getPrice())
                             .setIsNew(preset.isNew())
                             .build();
-                    return car;
                 })
                 .limit(size)
                 .filter(Objects::nonNull)
