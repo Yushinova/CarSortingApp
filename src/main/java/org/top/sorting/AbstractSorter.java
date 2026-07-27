@@ -17,8 +17,8 @@ public abstract class AbstractSorter<T> implements Sorter<T> {
 
     @Override
     public List<T> sort(List<T> list, Comparator<? super T> comparator, Order order) {
-        if (list == null){
-            throw new IllegalArgumentException("Список для сортировки не может быть null");
+        if (list == null || list.isEmpty()){
+            throw new IllegalArgumentException("Список для сортировки не может быть null или пустым");
         }
         if (comparator == null){
             throw new IllegalArgumentException("Компаратор не может быть null");
