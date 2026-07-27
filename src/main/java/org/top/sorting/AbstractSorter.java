@@ -11,12 +11,12 @@ public abstract class AbstractSorter<T> implements Sorter<T> {
     private Order order;
 
     @Override
-    public void sort(List<T> list, Comparator<? super T> comparator) {
-        sort(list,comparator, Order.DIRECT);
+    public List<T> sort(List<T> list, Comparator<? super T> comparator) {
+        return sort(list,comparator, Order.DIRECT);
     }
 
     @Override
-    public void sort(List<T> list, Comparator<? super T> comparator, Order order) {
+    public List<T> sort(List<T> list, Comparator<? super T> comparator, Order order) {
         if (list == null){
             throw new IllegalArgumentException("Список для сортировки не может быть null");
         }
@@ -29,6 +29,8 @@ public abstract class AbstractSorter<T> implements Sorter<T> {
         this.order = order;
 
         sort();
+
+        return this.list;
     }
 
     protected void swap(int i1, int i2) {
@@ -46,5 +48,5 @@ public abstract class AbstractSorter<T> implements Sorter<T> {
         return (order == Order.DIRECT) ? intFlag > 0 : intFlag < 0;
     }
 
-    public abstract void sort();
+    protected abstract void sort();
 }
