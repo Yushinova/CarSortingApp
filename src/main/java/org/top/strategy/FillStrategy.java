@@ -4,5 +4,5 @@ import org.top.model.Car;
 import java.util.List;
 
 public interface FillStrategy {
-    void fill(List<Car> list, int size);
+    List<Car> fill(List<Car> list, int size);
 }

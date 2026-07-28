@@ -1,12 +1,10 @@
-package org.top.strategy;
+package org.top.io;
 
 import org.top.builder.CarBuilder;
 import org.top.model.Car;
-
-import java.time.Year;
+import org.top.strategy.FillStrategy;
 
 import java.util.List;
-import java.util.Locale;
 import java.util.Scanner;
 
 import static java.lang.Integer.parseInt;
@@ -20,7 +18,7 @@ public class ManualFill implements FillStrategy {
     }
 
     @Override
-    public void fill(List<Car> list, int size) {
+    public List<Car> fill(List<Car> list, int size) {
         for (int i = 0; i < size; i++) {
             boolean success = false;
             while (!success) {
@@ -49,6 +47,7 @@ public class ManualFill implements FillStrategy {
                 }
             }
         }
+        return list;
     }
 
     private boolean customReadBoolean(String s) {

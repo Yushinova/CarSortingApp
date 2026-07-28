@@ -1,8 +1,9 @@
-package org.top.strategy;
+package org.top.io;
 
 import org.top.builder.CarBuilder;
 import org.top.model.Car;
 import org.top.model.CarPreset;
+import org.top.strategy.FillStrategy;
 
 import java.util.List;
 import java.util.Objects;
@@ -15,7 +16,7 @@ public class RandomFill implements FillStrategy {
     private final Random random = new Random();
 
     @Override
-    public void fill(List<Car> list, int size) {
+    public List<Car> fill(List<Car> list, int size) {
         CarPreset[] presets = CarPreset.values();
 
         List<Car> generated = Stream.generate(() -> {
@@ -35,6 +36,7 @@ public class RandomFill implements FillStrategy {
                 .collect(Collectors.toList());
 
         list.addAll(generated);
+        return list;
     }
 }
 
