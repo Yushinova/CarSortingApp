@@ -51,7 +51,6 @@ public abstract class AbstractSublistCarSorter implements Sorter<Car> {
         return switch (filter) {
             case EVEN -> (getValue(car) % 2 == 0);
             case ODEN -> (getValue(car) % 2 == 1);
-            default -> throw new IllegalStateException("Неверное состояние фильтра");
         };
     }
 
