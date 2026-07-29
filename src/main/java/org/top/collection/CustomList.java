@@ -9,18 +9,12 @@ import java.util.ListIterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 
+import org.top.strategy.Sorter;
+
 public class CustomList<E> implements List<E> {
     private final int START_SIZE = 8;
     private Object[] objects;
     private int lastIndex;
-
-    public int getInnerSize() {
-        return this.objects.length;
-    }
-
-    public int getLastIndex() {
-        return this.lastIndex;
-    }
 
     public CustomList() {
         this.init();
@@ -78,7 +72,6 @@ public class CustomList<E> implements List<E> {
             return cursor <= lastIndex;
         }
 
-        @SuppressWarnings("unchecked")
         @Override
         public E next() {
             if (!this.hasNext())
@@ -87,7 +80,6 @@ public class CustomList<E> implements List<E> {
         }
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public <T> T[] toArray(T[] a) {
         if (a.length < size())
@@ -189,14 +181,12 @@ public class CustomList<E> implements List<E> {
         init();
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public E get(int index) {
         this.checkIndex(index);
         return (E) objects[index];
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public E set(int index, E element) {
         this.checkIndex(index);
@@ -213,7 +203,6 @@ public class CustomList<E> implements List<E> {
         objects[index] = element;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public E remove(int index) {
         this.checkIndex(index);
@@ -265,7 +254,6 @@ public class CustomList<E> implements List<E> {
             return this.cursor <= lastIndex;
         }
 
-        @SuppressWarnings("unchecked")
         @Override
         public E next() {
             if (!hasNext())
@@ -279,7 +267,6 @@ public class CustomList<E> implements List<E> {
             return cursor > 0;
         }
 
-        @SuppressWarnings("unchecked")
         @Override
         public E previous() {
             if (!hasPrevious())
@@ -322,7 +309,6 @@ public class CustomList<E> implements List<E> {
         }
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public List<E> subList(int fromIndex, int toIndex) {
         this.checkIndex(fromIndex);
@@ -334,9 +320,12 @@ public class CustomList<E> implements List<E> {
         return sub;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void sort(Comparator<? super E> c) {
         Arrays.sort((E[]) objects, 0, this.size(), c);
+    }
+
+    public void customSort(Sorter<E> sorter, Comparator<E> comparator) {
+        sorter.sort(this, comparator);
     }
 }
