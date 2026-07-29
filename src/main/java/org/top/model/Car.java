@@ -39,8 +39,15 @@ public class Car {
 
     @Override
     public String toString() {
-        return String.format("Car{brand='%s', model='%s', year=%d, color='%s', power=%d л.с., price=%.2f ₽, isNew=%b}",
-                brand, model, year, color, power, price, isNew);
+        return String.format("%s %s (%d) | %s | %d л.с. | %.2f ₽ | %s",
+                brand,
+                model,
+                year,
+                color,
+                power,
+                price,
+                isNew ? "Новая" : "Б/У"
+        );
     }
 
     @Override
