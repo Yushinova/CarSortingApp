@@ -57,23 +57,6 @@ public class FileDataIO<T> implements DataIO<T> {
             throw new RuntimeException(String.format("Критическая ошибка при работе с файлом '%s'. Текст ошибки: %s",
                     filename, e.getMessage()));
         }
-
-        // try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
-        // String line;
-        // while ((line = reader.readLine()) != null) {
-        // try {
-        // T item = converter.fromString(line);
-        // if (item != null)
-        // items.add(item);
-        // } catch (Exception e) {
-        // System.err.println(String.format("Ошибка парсинга строки: %s. Текст ошибки:
-        // %s", line, e.getMessage()));
-        // }
-        // }
-        // } catch (IOException e) {
-        // throw new RuntimeException(String.format("Критическая ошибка при работе с
-        // файлом '%s'. Текст ошибки: %s", filename, e.getMessage()));
-        // }
     }
 
 }
