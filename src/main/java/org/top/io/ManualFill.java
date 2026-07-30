@@ -18,7 +18,7 @@ public class ManualFill implements FillStrategy {
     }
 
     @Override
-    public List<Car> fill(List<Car> list, int size) {
+    public CustomList fill(CustomList list, int size) {
         for (int i = 0; i < size; i++) {
             boolean success = false;
             while (!success) {

@@ -16,10 +16,10 @@ public class RandomFill implements FillStrategy {
     private final Random random = new Random();
 
     @Override
-    public List<Car> fill(List<Car> list, int size) {
+    public CustomList fill(CustomList list, int size) {
         CarPreset[] presets = CarPreset.values();
 
-        List<Car> generated = Stream.generate(() -> {
+        CustomList generated = Stream.generate(() -> {
                     CarPreset preset = presets[random.nextInt(presets.length)];
                     return new CarBuilder()
                             .setBrand(preset.getBrand())
