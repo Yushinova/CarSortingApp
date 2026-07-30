@@ -1,7 +1,6 @@
 package org.top.strategy;
 
-import org.top.model.Car;
-import java.util.List;
+import org.top.collection.CustomList;
 
 public interface FillStrategy {
     CustomList fill(CustomList list, int size);

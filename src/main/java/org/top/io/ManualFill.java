@@ -1,13 +1,11 @@
 package org.top.io;
 
 import org.top.builder.CarBuilder;
+import org.top.collection.CustomList;
 import org.top.model.Car;
 import org.top.strategy.FillStrategy;
 
-import java.util.List;
 import java.util.Scanner;
-
-import static java.lang.Integer.parseInt;
 
 public class ManualFill implements FillStrategy {
 

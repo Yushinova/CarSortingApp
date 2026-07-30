@@ -1,6 +1,7 @@
 package org.top.io;
 
 import org.top.builder.CarBuilder;
+import org.top.collection.CustomList;
 import org.top.model.Car;
 import org.top.model.CarPreset;
 import org.top.strategy.FillStrategy;
@@ -19,7 +20,7 @@ public class RandomFill implements FillStrategy {
     public CustomList fill(CustomList list, int size) {
         CarPreset[] presets = CarPreset.values();
 
-        CustomList generated = Stream.generate(() -> {
+        CustomList generated = (CustomList) Stream.generate(() -> {
                     CarPreset preset = presets[random.nextInt(presets.length)];
                     return new CarBuilder()
                             .setBrand(preset.getBrand())
