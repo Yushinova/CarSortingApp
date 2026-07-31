@@ -1,6 +1,6 @@
 package org.top.menu.state;
 
-import org.top.menu.ui.AnsiColor;
+import org.top.menu.common.AnsiColor;
 
 public final class ExitState implements MenuState {
     @Override

@@ -3,20 +3,23 @@ package org.top.menu.state.fill;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.top.menu.service.CarDataService;
+import org.top.data.CarDataManager;
+import org.top.io.CarDataConverter;
+import org.top.io.ManualFill;
+import org.top.io.RandomFill;
+import org.top.menu.common.AnsiColor;
+import org.top.menu.common.InputValidator;
 import org.top.menu.state.MenuState;
-import org.top.menu.ui.AnsiColor;
-import org.top.menu.util.InputValidator;
 
 public final class FillCollectionState implements MenuState {
     private final InputValidator validator;
     private final Map<Integer, MenuState> fillingActions = new LinkedHashMap<>();
 
-    public FillCollectionState(CarDataService dataService, InputValidator validator) {
+    public FillCollectionState(CarDataManager dataManager, InputValidator validator, ManualFill manualFill, RandomFill randomFill, CarDataConverter carDataConverter) {
         this.validator = validator;
-        fillingActions.put(1, new ManualFillingAction(dataService, validator));
-        fillingActions.put(2, new RandomFillingAction(dataService, validator));
-        fillingActions.put(3, new FileFillingAction(dataService, validator));
+        fillingActions.put(1, new ManualFillingAction(dataManager, validator, manualFill));
+        fillingActions.put(2, new RandomFillingAction(dataManager, validator, randomFill));
+        fillingActions.put(3, new FileFillingAction(dataManager, validator, carDataConverter));
     }
 
     @Override

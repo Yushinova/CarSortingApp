@@ -1,21 +1,29 @@
 package org.top.menu.state.fill;
 
-import org.top.menu.service.CarDataService;
+import java.util.List;
+
+import org.top.collection.CustomList;
+import org.top.data.CarDataManager;
+import org.top.io.ManualFill;
+import org.top.menu.common.AnsiColor;
+import org.top.menu.common.InputValidator;
+import org.top.menu.common.Result;
 import org.top.menu.state.MenuState;
-import org.top.menu.ui.AnsiColor;
-import org.top.menu.util.InputValidator;
-import org.top.menu.util.Result;
+import org.top.model.Car;
 
 public final class ManualFillingAction implements MenuState {
-    private final CarDataService dataService;
+    private final CarDataManager dataManager;
     private final InputValidator validator;
+    private final ManualFill manualFill;
 
-    public ManualFillingAction(CarDataService dataService, InputValidator validator) {
-        this.dataService = dataService;
+    public ManualFillingAction(CarDataManager dataManager, InputValidator validator, ManualFill manualFill) {
+        this.dataManager = dataManager;
         this.validator = validator;
+        this.manualFill = manualFill;
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public boolean handle() {
         System.out.print("Введите длину коллекции для ручного ввода: ");
         Result<Integer> sizeResult = validator.validateSize(validator.readInt());
@@ -25,7 +33,13 @@ public final class ManualFillingAction implements MenuState {
             return true;
         }
         
-        dataService.fillManually(sizeResult.value());
+        CustomList<Car> tempContainer = new CustomList<>();
+        CustomList<Car> filledContainer = (CustomList<Car>) manualFill.fill(tempContainer, sizeResult.value());
+        
+        List<Car> currentList = dataManager.getCollection();
+        currentList.addAll(filledContainer);
+        dataManager.setCollection(currentList);
+        
         return true;
     }
 
