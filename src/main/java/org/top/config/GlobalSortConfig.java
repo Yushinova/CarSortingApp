@@ -7,7 +7,7 @@ public class GlobalSortConfig {
     private static GlobalSortConfig instance;
     private Sorter<?> currentSorter;
 
-    public GlobalSortConfig() {
+    private GlobalSortConfig() {
         this.currentSorter = new MergeSorter<>();
     }
     public static GlobalSortConfig getInstance() {
