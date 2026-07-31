@@ -3,11 +3,12 @@ package org.top.menu;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.top.menu.service.CarDataService;
-import org.top.menu.service.CarPrintService;
-import org.top.menu.service.FileExportService;
-import org.top.menu.service.SortService;
-import org.top.menu.state.EvenOddSortState;
+import org.top.data.CarDataManager;
+import org.top.io.CarDataConverter;
+import org.top.io.ManualFill;
+import org.top.io.RandomFill;
+import org.top.menu.common.AnsiColor;
+import org.top.menu.common.InputValidator;
 import org.top.menu.state.ExitState;
 import org.top.menu.state.MenuState;
 import org.top.menu.state.PrintCollectionState;
@@ -15,22 +16,21 @@ import org.top.menu.state.SaveFileState;
 import org.top.menu.state.ThreadCountState;
 import org.top.menu.state.fill.FillCollectionState;
 import org.top.menu.state.sort.CombinedSortAction;
-import org.top.menu.ui.AnsiColor;
-import org.top.menu.util.InputValidator;
+import org.top.menu.state.sort.EvenOddSortState;
 
 public final class ConsoleMenu {
     private final InputValidator validator;
     private final Map<Integer, MenuState> actions = new LinkedHashMap<>();
 
-    public ConsoleMenu(CarDataService data, CarPrintService print, SortService sort, FileExportService export, InputValidator validator) {
+    public ConsoleMenu(CarDataManager dataManager, InputValidator validator, ManualFill manualFill, RandomFill randomFill, CarDataConverter carDataConverter) {
         this.validator = validator;
 
-        actions.put(1, new FillCollectionState(data, validator));
-        actions.put(2, new PrintCollectionState(print));
-        actions.put(3, new CombinedSortAction(sort, validator));
-        actions.put(4, new EvenOddSortState(sort, validator));
-        actions.put(5, new SaveFileState(export, validator));
-        actions.put(6, new ThreadCountState(validator));
+        actions.put(1, new FillCollectionState(dataManager, validator, manualFill, randomFill, carDataConverter));
+        actions.put(2, new PrintCollectionState(dataManager));
+        actions.put(3, new CombinedSortAction(dataManager, validator));
+        actions.put(4, new EvenOddSortState(dataManager, validator));
+        actions.put(5, new SaveFileState(dataManager, validator, carDataConverter));
+        actions.put(6, new ThreadCountState(dataManager, validator));
         actions.put(0, new ExitState());
     }
 

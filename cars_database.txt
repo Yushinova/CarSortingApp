@@ -1,0 +1,9 @@
+Toyota;Camry;2020;Red;200;30000.0;false
+BMW;X5;2022;Black;250;45000.0;true
+Audi;A4;2021;White;190;35000.0;false
+Honda;Civic;2019;Blue;180;25000.0;true
+Toyota;Corolla;2021;Silver;140;22000.0;true
+BMW;X3;2021;Black;180;40000.0;false
+Mercedes;E-Class;2018;White;220;50000.0;false
+Audi;Q7;2022;Black;280;55000.0;true
+Лада;Гранта;2019;Blue;180;25000.0;true

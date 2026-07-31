@@ -1,16 +1,13 @@
 package org.top.io;
 
-import org.top.builder.CarBuilder;
-import org.top.collection.CustomList;
-import org.top.model.Car;
-import org.top.model.CarPreset;
-import org.top.strategy.FillStrategy;
-
-import java.util.List;
 import java.util.Objects;
 import java.util.Random;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import org.top.builder.CarBuilder;
+import org.top.collection.CustomList;
+import org.top.model.CarPreset;
+import org.top.strategy.FillStrategy;
 
 public class RandomFill implements FillStrategy {
 
@@ -20,7 +17,7 @@ public class RandomFill implements FillStrategy {
     public CustomList fill(CustomList list, int size) {
         CarPreset[] presets = CarPreset.values();
 
-        CustomList generated = (CustomList) Stream.generate(() -> {
+        Stream.generate(() -> {
                     CarPreset preset = presets[random.nextInt(presets.length)];
                     return new CarBuilder()
                             .setBrand(preset.getBrand())
@@ -34,11 +31,8 @@ public class RandomFill implements FillStrategy {
                 })
                 .limit(size)
                 .filter(Objects::nonNull)
-                .collect(Collectors.toList());
+                .forEach(list::add);
 
-        list.addAll(generated);
         return list;
     }
 }
-
-

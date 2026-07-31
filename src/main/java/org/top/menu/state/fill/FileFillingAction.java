@@ -1,31 +1,32 @@
 package org.top.menu.state.fill;
 
-import java.io.IOException;
-
-import org.top.menu.service.CarDataService;
+import org.top.data.CarDataManager;
+import org.top.io.CarDataConverter;
+import org.top.io.FileDataIO;
+import org.top.menu.common.AnsiColor;
+import org.top.menu.common.InputValidator;
 import org.top.menu.state.MenuState;
-import org.top.menu.ui.AnsiColor;
-import org.top.menu.util.InputValidator;
+import org.top.model.Car;
 
 public final class FileFillingAction implements MenuState {
-    private final CarDataService dataService;
+    private final CarDataManager dataManager;
     private final InputValidator validator;
+    private final CarDataConverter converter;
 
-    public FileFillingAction(CarDataService dataService, InputValidator validator) {
-        this.dataService = dataService;
+    public FileFillingAction(CarDataManager dataManager, InputValidator validator, CarDataConverter converter) {
+        this.dataManager = dataManager;
         this.validator = validator;
+        this.converter = converter;
     }
 
     @Override
     public boolean handle() {
-        System.out.print("Введите путь к текстовому файлу: ");
+        System.out.print("Введите путь к текстовому файлу для чтения: ");
         String path = validator.readString();
-        try {
-            dataService.fillFromFile(path);
-            System.out.println(AnsiColor.GREEN.colorize("Данные успешно считаны."));
-        } catch (IOException e) {
-            System.out.println(AnsiColor.RED.colorize("[Ошибка файла]: " + e.getLocalizedMessage()));
-        }
+        
+        new FileDataIO<Car>(path, converter).read(dataManager.getCollection());
+        
+        System.out.println(AnsiColor.GREEN.colorize("Данные успешно прочитаны и добавлены в CustomList."));
         return true;
     }
 

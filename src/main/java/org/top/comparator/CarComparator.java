@@ -1,8 +1,8 @@
 package org.top.comparator;
 
-import org.top.model.Car;
-
 import java.util.Comparator;
+
+import org.top.model.Car;
 
 public class CarComparator {
     public static final Comparator<Car> BY_BRAND =
@@ -24,5 +24,6 @@ public class CarComparator {
             Comparator.comparingDouble(Car::getPrice);
 
     public static final Comparator<Car> BY_IS_NEW =
-            Comparator.comparing(Car::isNew);//б/у в начале
+            Comparator.comparing(Car::isNew);
 }
+
