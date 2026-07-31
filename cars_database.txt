@@ -7,3 +7,4 @@ BMW;X3;2021;Black;180;40000.0;false
 Mercedes;E-Class;2018;White;220;50000.0;false
 Audi;Q7;2022;Black;280;55000.0;true
 Лада;Гранта;2019;Blue;180;25000.0;true
+Test;test;2002;white;250;265000.0;true

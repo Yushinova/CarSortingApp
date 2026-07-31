@@ -1,0 +1,4 @@
+Mercedes;E-Class;2018;220;50000.0;false
+Audi;Q7;2022;Black;t7t767;55000.0;true
+Лада;Гранта;2019;Blue;180;25000.0;true
+Test;test;2002;white;250;265000.0;25
