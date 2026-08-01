@@ -1,7 +1,7 @@
 package org.top.strategy;
 
-import org.top.collection.CustomList;
+import java.util.List;
 
-public interface FillStrategy {
-    CustomList fill(CustomList list, int size);
+public interface FillStrategy<T> {
+    List<T> fill(List<T> list, int size);
 }
