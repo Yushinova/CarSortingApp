@@ -33,16 +33,22 @@ public class CarDataConverter implements DataConverter<Car> {
         String[] carFields = line.split(DELIMITER);
         if (carFields.length != COUNT_FIELDS)
             return null;
+        try {
+            return new CarBuilder()
+                    .setBrand(carFields[0])
+                    .setModel(carFields[1])
+                    .setYear(Integer.parseInt(carFields[2]))
+                    .setColor(carFields[3])
+                    .setPower(Integer.parseInt(carFields[4]))
+                    .setPrice(Double.parseDouble(carFields[5]))
+                    .setIsNew(Boolean.parseBoolean(carFields[6]))
+                    .build();
 
-        return new CarBuilder()
-                .setBrand(carFields[0])
-                .setModel(carFields[1])
-                .setYear(Integer.parseInt(carFields[2]))
-                .setColor(carFields[3])
-                .setPower(Integer.parseInt(carFields[4]))
-                .setPrice(Double.parseDouble(carFields[5]))
-                .setIsNew(Boolean.parseBoolean(carFields[6]))
-                .build();
+        } catch (IllegalArgumentException e) {
+            System.out.println("Parsing error" + e.getMessage());
+            return null;
+        }
+
     }
 
 }

@@ -1,13 +1,13 @@
 package org.top.io;
 
 import org.top.builder.CarBuilder;
-import org.top.collection.CustomList;
 import org.top.model.Car;
 import org.top.strategy.FillStrategy;
 
+import java.util.List;
 import java.util.Scanner;
 
-public class ManualFill implements FillStrategy {
+public class ManualFill implements FillStrategy<Car> {
 
     private final Scanner reader;
 
@@ -16,7 +16,7 @@ public class ManualFill implements FillStrategy {
     }
 
     @Override
-    public CustomList fill(CustomList list, int size) {
+    public List<Car> fill(List<Car> list, int size) {
         for (int i = 0; i < size; i++) {
             boolean success = false;
             while (!success) {
