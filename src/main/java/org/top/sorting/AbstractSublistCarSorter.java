@@ -31,6 +31,8 @@ public abstract class AbstractSublistCarSorter implements Sorter<Car> {
 
         for (int i = 0; i < list.size(); i++){
             Car car = list.get(i);
+            if (car == null)
+                continue;
             if (pass(car)) {
                 sublist.add(car);
                 indexes.add(i);
