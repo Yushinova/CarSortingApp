@@ -15,6 +15,9 @@ public abstract class AbstractSublistCarSorter implements Sorter<Car> {
         if (sorter == null) {
             throw new IllegalArgumentException("Сортировщик не может быть null");
         }
+        if (filter == null) {
+            throw new IllegalArgumentException("Фильтр не может быть null");
+        }
 
         this.sorter = sorter;
         this.filter = filter;
@@ -26,6 +29,9 @@ public abstract class AbstractSublistCarSorter implements Sorter<Car> {
 
     @Override
     public final List<Car> sort(List<Car> list, Comparator<? super Car> comparator, Order order) {
+        if (list == null) {
+            throw new IllegalArgumentException("Список не может быть null");
+        }
         List<Car> sublist = new ArrayList<>();
         List<Integer> indexes = new ArrayList<>();
 
