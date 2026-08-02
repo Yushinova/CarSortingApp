@@ -1,50 +1,47 @@
 package org.top.menu.state.fill;
 
-import java.util.List;
-
 import org.top.collection.CustomList;
-import org.top.data.CarDataManager;
+import org.top.data.CarDataService;
 import org.top.io.RandomFill;
-import org.top.menu.common.AnsiColor;
+import org.top.menu.state.MenuState;
 import org.top.menu.common.InputValidator;
 import org.top.menu.common.Result;
-import org.top.menu.state.MenuState;
 import org.top.model.Car;
+import java.util.List;
+import java.util.Objects;
 
 public final class RandomFillingAction implements MenuState {
-    private final CarDataManager dataManager;
+    private final CarDataService dataService;
     private final InputValidator validator;
     private final RandomFill randomFill;
 
-    public RandomFillingAction(CarDataManager dataManager, InputValidator validator, RandomFill randomFill) {
-        this.dataManager = dataManager;
-        this.validator = validator;
-        this.randomFill = randomFill;
+    public RandomFillingAction(CarDataService dataService, InputValidator validator, RandomFill randomFill) {
+        this.dataService = Objects.requireNonNull(dataService);
+        this.validator = Objects.requireNonNull(validator);
+        this.randomFill = Objects.requireNonNull(randomFill);
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public boolean handle() {
+    public Result<Boolean> handle() {
         System.out.print("Введите длину коллекции для генерации: ");
         Result<Integer> sizeResult = validator.validateSize(validator.readInt());
         
         if (sizeResult.isFailure()) {
-            System.out.println(AnsiColor.RED.colorize("[Ошибка]: " + sizeResult.errorMessage()));
-            return true;
+            return Result.failure(sizeResult.errorMessage());
         }
+
+        dataService.clearCollection();
         
-        CustomList<Car> tempContainer = new CustomList<>();
-        CustomList<Car> filledContainer = (CustomList<Car>) randomFill.fill(tempContainer, sizeResult.value());
+        List<Car> tempContainer = new CustomList<>();
+        List<Car> list = randomFill.fill((CustomList) tempContainer, sizeResult.value());
         
-        List<Car> currentList = dataManager.getCollection();
-        currentList.addAll(filledContainer);
-        dataManager.setCollection(currentList);
+        dataService.add(list.stream());
         
-        return true;
+        return Result.success(true);
     }
 
     @Override
     public String getDescription() {
-        return "Сгенерировать случайным образом (Рандом)";
+        return "Сгенерировать случайным образом";
     }
 }

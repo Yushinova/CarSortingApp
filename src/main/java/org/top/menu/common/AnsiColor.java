@@ -1,5 +1,7 @@
 package org.top.menu.common;
 
+import java.util.Objects;
+
 public enum AnsiColor {
     RESET("\u001B[0m"),
     RED("\u001B[31m"),
@@ -12,7 +14,7 @@ public enum AnsiColor {
     private final String code;
 
     AnsiColor(String code) {
-        this.code = code;
+        this.code = Objects.requireNonNull(code);
     }
 
     public String colorize(String text) {

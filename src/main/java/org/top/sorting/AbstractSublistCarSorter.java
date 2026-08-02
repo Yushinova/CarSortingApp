@@ -1,11 +1,11 @@
 package org.top.sorting;
 
-import org.top.strategy.Sorter;
-import org.top.model.Car;
-
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+
+import org.top.model.Car;
+import org.top.strategy.Sorter;
 
 public abstract class AbstractSublistCarSorter implements Sorter<Car> {
     private final Sorter<Car> sorter;

@@ -1,8 +1,9 @@
 package org.top.menu.state;
 
 import java.util.List;
+import java.util.Objects;
 
-import org.top.data.CarDataManager;
+import org.top.data.CarDataService;
 import org.top.menu.common.AnsiColor;
 import org.top.menu.common.InputValidator;
 import org.top.menu.common.Result;
@@ -10,20 +11,19 @@ import org.top.model.Car;
 import org.top.thread.ThreadManager;
 
 public final class ThreadCountState implements MenuState {
-    private final CarDataManager dataManager;
+    private final CarDataService dataManager;
     private final InputValidator validator;
 
-    public ThreadCountState(CarDataManager dataManager, InputValidator validator) {
-        this.dataManager = dataManager;
-        this.validator = validator;
+    public ThreadCountState(CarDataService dataManager, InputValidator validator) {
+        this.dataManager = Objects.requireNonNull(dataManager);
+        this.validator = Objects.requireNonNull(validator);
     }
 
     @Override
-    public boolean handle() {
+    public Result<Boolean> handle() {
         List<Car> currentList = dataManager.getCollection();
         if (currentList == null || currentList.isEmpty()) {
-            System.out.println(AnsiColor.RED.colorize("[Ошибка]: Коллекция пуста. Сначала заполните её!"));
-            return true;
+            return Result.failure("Коллекция пуста. Сначала заполните её!");
         }
 
         int targetIndex;
@@ -59,7 +59,10 @@ public final class ThreadCountState implements MenuState {
         System.out.println("Элемент: " + targetElement);
         System.out.println("Всего точных совпадений в коллекции: " + AnsiColor.GREEN.colorize(String.valueOf(totalOccurrences)));
         
-        return true;
+        System.out.println(AnsiColor.CYAN.colorize("\nНажмите любую клавишу, чтобы продолжить..."));
+        validator.readString();
+        
+        return Result.success(true);
     }
 
     @Override

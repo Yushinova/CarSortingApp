@@ -1,12 +1,13 @@
 package org.top.menu.state;
 
 import org.top.menu.common.AnsiColor;
+import org.top.menu.common.Result;
 
 public final class ExitState implements MenuState {
     @Override
-    public boolean handle() {
+    public Result<Boolean> handle() {
         System.out.println(AnsiColor.GREEN.colorize("\nВыход из программы. До свидания!"));
-        return false;
+        return Result.success(false);
     }
 
     @Override

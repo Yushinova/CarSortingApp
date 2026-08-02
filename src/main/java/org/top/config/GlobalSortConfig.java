@@ -1,28 +1,22 @@
 package org.top.config;
 
-import org.top.sorting.MergeSorter;
+import java.util.Objects;
+
+import org.top.model.Car;
 import org.top.strategy.Sorter;
 
-public class GlobalSortConfig {
-    private static GlobalSortConfig instance;
-    private Sorter<?> currentSorter;
+public final class GlobalSortConfig {
+    private Sorter<Car> sorter;
 
-    public GlobalSortConfig() {
-        this.currentSorter = new MergeSorter<>();
-    }
-    public static GlobalSortConfig getInstance() {
-        if (instance == null) {
-            instance = new GlobalSortConfig();
-        }
-        return instance;
+    public GlobalSortConfig(Sorter<Car> sorter) {
+        setSorter(sorter);
     }
 
-    public void setSorter(Sorter<?> sorter) {
-        this.currentSorter = sorter;
+    public Sorter<Car> getSorter() {
+        return sorter;
     }
 
-    @SuppressWarnings("unchecked")
-    public <T> Sorter<T> getSorter() {
-        return (Sorter<T>) currentSorter;
+    public void setSorter(Sorter<Car> sorter) {
+        this.sorter = Objects.requireNonNull(sorter);
     }
 }
