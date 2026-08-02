@@ -1,20 +1,22 @@
 package org.top.io;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 import java.util.stream.Stream;
 
 import org.top.builder.CarBuilder;
 import org.top.collection.CustomList;
+import org.top.model.Car;
 import org.top.model.CarPreset;
 import org.top.strategy.FillStrategy;
 
-public class RandomFill implements FillStrategy {
+public class RandomFill implements FillStrategy<Car> {
 
     private final Random random = new Random();
 
     @Override
-    public CustomList fill(CustomList list, int size) {
+    public List<Car> fill(List<Car> list, int size) {
         CarPreset[] presets = CarPreset.values();
 
         Stream.generate(() -> {
