@@ -32,7 +32,7 @@ public final class FileExportTest {
             ioEngine.write(writeList2, true);
 
             List<Car> readList = new CustomList<>();
-            ioEngine.read(readList);
+            ioEngine.read(readList, 2);
 
             boolean integrationSuccess = readList.size() == 2 
                     && "Toyota".equals(readList.get(0).getBrand()) 
