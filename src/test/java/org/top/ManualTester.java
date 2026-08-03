@@ -14,6 +14,7 @@ import org.top.model.CarComparatorTest;
 import org.top.sorting.EvenOddSortTest;
 import org.top.sorting.SortNegativeTest;
 import org.top.sorting.SortServiceTest;
+import org.top.sorting.SublistNegativeTest;
 import org.top.thread.ThreadCountTest;
 import org.top.util.Assert;
 
@@ -40,6 +41,7 @@ public final class ManualTester {
         EvenOddSortTest.run();
         SortServiceTest.run();
         SortNegativeTest.run();
+        SublistNegativeTest.run();
         
         ThreadCountTest.run();
 

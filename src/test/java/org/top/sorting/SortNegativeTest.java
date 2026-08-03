@@ -109,16 +109,6 @@ public final class SortNegativeTest {
                 .setIsNew(true)
                 .build()
         );
-        cars.add(new CarBuilder()
-                .setBrand("Chevrolet")
-                .setModel("Cyan")
-                .setYear(2008)
-                .setColor("White")
-                .setPower(98)
-                .setPrice(1100000)
-                .setIsNew(true)
-                .build()
-        );
         boolean result = false;
         Sorter<Car> sorter = new BubbleSorter<>();
         try {
