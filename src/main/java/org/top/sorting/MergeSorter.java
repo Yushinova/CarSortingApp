@@ -1,8 +1,5 @@
 package org.top.sorting;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class MergeSorter<T> extends AbstractSorter<T> {
     @Override
     protected void sort() {
