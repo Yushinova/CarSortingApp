@@ -1,9 +1,10 @@
 package org.top.io;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface DataIO<T> {
-    void write(List<T> items, boolean append);
+    void read(List<T> items, int countRecordRead) throws IOException;
 
-    void read(List<T> items);
+    void write(List<T> items, boolean append) throws IOException;
 }

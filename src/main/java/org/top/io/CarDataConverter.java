@@ -45,7 +45,7 @@ public class CarDataConverter implements DataConverter<Car> {
                     .build();
 
         } catch (IllegalArgumentException e) {
-            System.out.println("Parsing error" + e.getMessage());
+            System.out.println("Parsing error " + e.getMessage());
             return null;
         }
 

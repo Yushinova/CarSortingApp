@@ -19,7 +19,7 @@ public class FileDataIO<T> implements DataIO<T> {
     }
 
     @Override
-    public void write(List<T> items, boolean append) {
+    public void write(List<T> items, boolean append) throws IOException {
         Path path = Path.of(filename);
 
         try {
@@ -31,30 +31,27 @@ public class FileDataIO<T> implements DataIO<T> {
             Files.write(path, lines, StandardCharsets.UTF_8, StandardOpenOption.CREATE, option);
 
         } catch (IOException e) {
-            throw new RuntimeException(String.format("Критическая ошибка при работе с файлом '%s'. Текст ошибки: %s",
+            throw new IOException(String.format("Ошибка при работе с файлом '%s'. Текст ошибки: %s",
                     filename, e.getMessage()));
         }
     }
 
     @Override
-    public void read(List<T> items) {
+    public void read(List<T> items, int countRecordRead) throws IOException {
         Path path = Path.of(filename);
-        if (!Files.exists(path)) {
-            System.err.println(String.format("Ошибка, файл '%s' не существует", filename));
-            return;
-        }
+        if (!Files.exists(path))
+            throw new IOException(String.format("Файл '%s' не существует", filename));
 
         try (Stream<String> lines = Files.lines(path, StandardCharsets.UTF_8)) {
-
             lines
                     .map(String::trim)
                     .filter(line -> !line.isBlank())
                     .map(converter::fromString)
+                    .limit(countRecordRead > 0 ? countRecordRead : Integer.MAX_VALUE)
                     .filter(Objects::nonNull)
                     .forEach(items::add);
-
         } catch (IOException e) {
-            throw new RuntimeException(String.format("Критическая ошибка при работе с файлом '%s'. Текст ошибки: %s",
+            throw new IOException(String.format("Ошибка при работе с файлом '%s'. Текст ошибки: %s",
                     filename, e.getMessage()));
         }
     }
