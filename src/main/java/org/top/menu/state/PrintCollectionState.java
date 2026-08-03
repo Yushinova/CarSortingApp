@@ -1,28 +1,37 @@
 package org.top.menu.state;
 
-import org.top.data.CarDataManager;
+import java.util.List;
+import java.util.Objects;
+
+import org.top.data.CarDataService;
 import org.top.menu.common.AnsiColor;
+import org.top.menu.common.InputValidator;
+import org.top.menu.common.Result;
 import org.top.model.Car;
 
 public final class PrintCollectionState implements MenuState {
-    private final CarDataManager dataManager;
+    private final CarDataService dataService;
+    private final InputValidator validator;
 
-    public PrintCollectionState(CarDataManager dataManager) {
-        this.dataManager = dataManager;
+    public PrintCollectionState(CarDataService dataService, InputValidator validator) {
+        this.dataService = Objects.requireNonNull(dataService);
+        this.validator = Objects.requireNonNull(validator);
     }
 
     @Override
-    public boolean handle() {
-        if (dataManager.getCollection().isEmpty()) {
-            System.out.println("Коллекция пуста.");
-            return true;
+    public Result<Boolean> handle() {
+        List<Car> list = dataService.getCollection();
+        if (list.isEmpty()) {
+            System.out.println(AnsiColor.RED.colorize("[Информация]: Коллекция пуста."));
+        } else {
+            for (int i = 0; i < list.size(); i++) {
+                System.out.println(AnsiColor.YELLOW.colorize((i + 1) + ".") + " " + list.get(i));
+            }
         }
         
-        for (int i = 0; i < dataManager.getCollection().size(); i++) {
-            Car car = dataManager.getCollection().get(i);
-            System.out.println(AnsiColor.YELLOW.colorize((i + 1) + ".") + " " + car);
-        }
-        return true;
+        System.out.println(AnsiColor.CYAN.colorize("\nНажмите любую клавишу, чтобы продолжить..."));
+        validator.readString();
+        return Result.success(true);
     }
 
     @Override

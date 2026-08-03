@@ -1,13 +1,14 @@
 package org.top.menu.common;
 
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Scanner;
 
 public final class InputValidator {
     private final Scanner scanner;
 
     public InputValidator(Scanner scanner) {
-        this.scanner = scanner;
+        this.scanner = Objects.requireNonNull(scanner);
     }
 
     public int readInt() {
@@ -34,14 +35,14 @@ public final class InputValidator {
 
     public Result<Integer> validateMenuChoice(int choice, int min, int max) {
         if (choice < min || choice > max) {
-            return Result.failure("Выберите пункт в диапазоне от " + min + " до " + max);
+            return Result.failure("Выберите пункт в диапазоне от " + min + " до " + max + ".");
         }
         return Result.success(choice);
     }
 
     public Result<Integer> validateSize(int size) {
         if (size <= 0) {
-            return Result.failure("Размер коллекции должен быть строго больше нуля!");
+            return Result.failure("Размер коллекции должен быть больше нуля.");
         }
         return Result.success(size);
     }

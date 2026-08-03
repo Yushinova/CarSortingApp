@@ -1,33 +1,46 @@
 package org.top.menu.state.fill;
 
-import org.top.data.CarDataManager;
+import java.util.Objects;
+
+import org.top.data.CarDataService;
 import org.top.io.CarDataConverter;
 import org.top.io.FileDataIO;
-import org.top.menu.common.AnsiColor;
 import org.top.menu.common.InputValidator;
+import org.top.menu.common.Result;
 import org.top.menu.state.MenuState;
-import org.top.model.Car;
 
 public final class FileFillingAction implements MenuState {
-    private final CarDataManager dataManager;
+    private final CarDataService dataService;
     private final InputValidator validator;
     private final CarDataConverter converter;
 
-    public FileFillingAction(CarDataManager dataManager, InputValidator validator, CarDataConverter converter) {
-        this.dataManager = dataManager;
-        this.validator = validator;
-        this.converter = converter;
+    public FileFillingAction(CarDataService dataService, InputValidator validator, CarDataConverter converter) {
+        this.dataService = Objects.requireNonNull(dataService);
+        this.validator = Objects.requireNonNull(validator);
+        this.converter = Objects.requireNonNull(converter);
     }
 
     @Override
-    public boolean handle() {
+    public Result<Boolean> handle() {
         System.out.print("Введите путь к текстовому файлу для чтения: ");
         String path = validator.readString();
         
-        new FileDataIO<Car>(path, converter).read(dataManager.getCollection());
-        
-        System.out.println(AnsiColor.GREEN.colorize("Данные успешно прочитаны и добавлены в CustomList."));
-        return true;
+        System.out.print("Введите длину коллекции чтения из файла: ");
+        Result<Integer> sizeResult = validator.validateSize(validator.readInt());
+
+        if (sizeResult.isFailure()) {
+            return Result.failure(sizeResult.errorMessage());
+        }
+
+        dataService.clearCollection();
+
+        try {
+            new FileDataIO<>(path, converter)
+                .read(dataService.getCollection(), sizeResult.value());
+            return Result.success(true);
+        } catch (Exception e) {
+            return Result.failure("Ошибка чтения: " + e.getMessage());
+        }
     }
 
     @Override

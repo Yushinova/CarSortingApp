@@ -37,7 +37,7 @@ public class FileDataIO<T> implements DataIO<T> {
     }
 
     @Override
-    public void read(List<T> items) {
+    public void read(List<T> items, int limit) {
         Path path = Path.of(filename);
         if (!Files.exists(path)) {
             System.err.println(String.format("Ошибка, файл '%s' не существует", filename));
@@ -47,11 +47,12 @@ public class FileDataIO<T> implements DataIO<T> {
         try (Stream<String> lines = Files.lines(path, StandardCharsets.UTF_8)) {
 
             lines
-                    .map(String::trim)
-                    .filter(line -> !line.isBlank())
-                    .map(converter::fromString)
-                    .filter(Objects::nonNull)
-                    .forEach(items::add);
+                .limit(limit)
+                .map(String::trim)
+                .filter(line -> !line.isBlank())
+                .map(converter::fromString)
+                .filter(Objects::nonNull)
+                .forEach(items::add);
 
         } catch (IOException e) {
             throw new RuntimeException(String.format("Критическая ошибка при работе с файлом '%s'. Текст ошибки: %s",
