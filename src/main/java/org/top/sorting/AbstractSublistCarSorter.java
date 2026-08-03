@@ -1,9 +1,9 @@
 package org.top.sorting;
 
+import org.top.collection.CustomList;
 import org.top.strategy.Sorter;
 import org.top.model.Car;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
@@ -32,8 +32,8 @@ public abstract class AbstractSublistCarSorter implements Sorter<Car> {
         if (list == null) {
             throw new IllegalArgumentException("Список не может быть null");
         }
-        List<Car> sublist = new ArrayList<>();
-        List<Integer> indexes = new ArrayList<>();
+        List<Car> sublist = new CustomList<>();
+        List<Integer> indexes = new CustomList<>();
 
         for (int i = 0; i < list.size(); i++){
             Car car = list.get(i);
