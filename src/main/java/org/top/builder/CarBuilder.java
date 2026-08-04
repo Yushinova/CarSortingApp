@@ -3,7 +3,6 @@ package org.top.builder;
 import org.top.model.Car;
 
 import java.time.Year;
-import java.util.Optional;
 
 public class CarBuilder {
     private String brand;
@@ -61,13 +60,8 @@ public class CarBuilder {
     }
 
     public Car build() {
-        try {
-            validate();
-            return new Car(brand, model, year, color, power, price, isNew);
-        } catch (IllegalArgumentException e) {
-            System.out.println("Build error: " + e.getMessage());
-            return null;
-        }
+        validate();
+        return new Car(brand, model, year, color, power, price, isNew);
     }
 
     private void validate() {
