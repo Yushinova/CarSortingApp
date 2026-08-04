@@ -1,12 +1,11 @@
 package org.top.io;
 
+import java.util.List;
+import java.util.Scanner;
+
 import org.top.builder.CarBuilder;
 import org.top.model.Car;
 import org.top.strategy.FillStrategy;
-
-import java.io.IOException;
-import java.util.List;
-import java.util.Scanner;
 
 public class ManualFill implements FillStrategy<Car> {
 

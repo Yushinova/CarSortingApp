@@ -1,14 +1,15 @@
 package org.top.menu.state.fill;
 
+import java.util.List;
+import java.util.Objects;
+
 import org.top.collection.CustomList;
 import org.top.data.CarDataService;
 import org.top.io.RandomFill;
-import org.top.menu.state.MenuState;
 import org.top.menu.common.InputValidator;
 import org.top.menu.common.Result;
+import org.top.menu.state.MenuState;
 import org.top.model.Car;
-import java.util.List;
-import java.util.Objects;
 
 public final class RandomFillingAction implements MenuState {
     private final CarDataService dataService;
@@ -33,7 +34,7 @@ public final class RandomFillingAction implements MenuState {
         dataService.clearCollection();
         
         List<Car> tempContainer = new CustomList<>();
-        List<Car> list = randomFill.fill((CustomList) tempContainer, sizeResult.value());
+        List<Car> list = randomFill.fill(tempContainer, sizeResult.value());
         
         dataService.add(list.stream());
         

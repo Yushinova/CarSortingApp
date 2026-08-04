@@ -7,7 +7,6 @@ import org.top.menu.state.MenuState;
 
 public final class MenuEngine {
     private final InputValidator validator;
-    private static final String CLEAR_SCREEN = "\033[H\033[2J";
 
     public MenuEngine(InputValidator validator) {
         this.validator = Objects.requireNonNull(validator);
@@ -17,8 +16,7 @@ public final class MenuEngine {
         boolean keepRunning = true;
 
         while (keepRunning) {
-            System.out.print(CLEAR_SCREEN);
-            System.out.flush();
+            Screen.clear();
 
             System.out.println(AnsiColor.CYAN.colorize("\n========== " + title + " =========="));
             actions.forEach((key, state) -> 
