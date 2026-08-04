@@ -1,5 +1,6 @@
 package org.top.menu.state;
 
+import java.io.IOException;
 import java.util.Objects;
 
 import org.top.data.CarDataService;
@@ -28,14 +29,19 @@ public final class SaveFileState implements MenuState {
 
         System.out.print("Режим записи (1 - Перезаписать, 2 - Добавить в конец): ");
         Result<Integer> modeResult = validator.validateMenuChoice(validator.readInt(), 1, 2);
-        
+
         if (modeResult.isFailure()) {
             return Result.failure(modeResult.errorMessage());
         }
 
         boolean appendMode = (modeResult.value() == 2);
 
-        new FileDataIO<>(path, converter).write(dataManager.getCollection(), appendMode);
+        try {
+            new FileDataIO<>(path, converter).write(dataManager.getCollection(), appendMode);
+        } catch (IOException e) {
+            System.out.println(AnsiColor.RED.colorize(e.getMessage()));
+            return Result.failure("Ошибка записи: " + e.getMessage());
+        }
         System.out.println(AnsiColor.GREEN.colorize("Данные успешно записаны."));
         return Result.success(true);
     }
