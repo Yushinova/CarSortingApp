@@ -10,6 +10,6 @@ public final class BackState implements MenuState {
 
     @Override
     public String getDescription() {
-        return "Назад (в предыдущее меню)";
+        return "Назад";
     }
 }

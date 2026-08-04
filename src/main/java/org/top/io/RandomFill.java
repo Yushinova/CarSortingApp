@@ -6,7 +6,6 @@ import java.util.Random;
 import java.util.stream.Stream;
 
 import org.top.builder.CarBuilder;
-import org.top.collection.CustomList;
 import org.top.model.Car;
 import org.top.model.CarPreset;
 import org.top.strategy.FillStrategy;

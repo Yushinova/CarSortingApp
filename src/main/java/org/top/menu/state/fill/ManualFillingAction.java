@@ -1,14 +1,15 @@
 package org.top.menu.state.fill;
 
+import java.util.List;
+import java.util.Objects;
+
 import org.top.collection.CustomList;
 import org.top.data.CarDataService;
 import org.top.io.ManualFill;
-import org.top.menu.state.MenuState;
 import org.top.menu.common.InputValidator;
 import org.top.menu.common.Result;
+import org.top.menu.state.MenuState;
 import org.top.model.Car;
-import java.util.List;
-import java.util.Objects;
 
 public final class ManualFillingAction implements MenuState {
     private final CarDataService dataService;
@@ -33,7 +34,7 @@ public final class ManualFillingAction implements MenuState {
         dataService.clearCollection();
         
         List<Car> tempContainer = new CustomList<>();
-        List<Car> filledList = manualFill.fill((CustomList) tempContainer, sizeResult.value());
+        List<Car> filledList = manualFill.fill(tempContainer, sizeResult.value());
         
         dataService.add(filledList.stream());
         
