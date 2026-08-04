@@ -67,13 +67,12 @@ public final class CustomListTest {
         for (int i = 0; i < 15; i++) {
             list.add(new Car("Toyota", "Camry", 2020, "Red", 200, 30000.0, false));
         }
-        System.out.println("Выводим все оставшиеся машины в списке:");
-        System.out.println("Выводим все машины в списке " + list.size() + ":");
         int count = 0;
         for (Car car : list) {
+            car.isNew();
             count++;
-            System.out.println(count + ". " + car);
         }
+        Assert.assertThat(count == list.size(), "CustomList: Проверка работы итератора");
     }
 
     private static void testContains() {
