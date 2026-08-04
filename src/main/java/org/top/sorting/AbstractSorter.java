@@ -23,6 +23,9 @@ public abstract class AbstractSorter<T> implements Sorter<T> {
         if (comparator == null){
             throw new IllegalArgumentException("Компаратор не может быть null");
         }
+        if (order == null){
+            throw new IllegalArgumentException("Порядок сортировки не может быть null");
+        }
 
         this.list = list;
         this.comparator = comparator;

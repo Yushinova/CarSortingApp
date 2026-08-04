@@ -3,6 +3,7 @@ package org.top;
 import java.util.Scanner;
 
 import org.top.collection.CustomList;
+import org.top.config.GlobalSortConfig;
 import org.top.data.CarDataManager;
 import org.top.io.CarDataConverter;
 import org.top.io.ManualFill;
@@ -10,6 +11,7 @@ import org.top.io.RandomFill;
 import org.top.menu.ConsoleMenu;
 import org.top.menu.common.InputValidator;
 import org.top.model.Car;
+import org.top.sorting.BubbleSorter;
 
 public final class Main {
     public static void main(String[] args) {
@@ -23,7 +25,9 @@ public final class Main {
         RandomFill randomFill = new RandomFill();
         CarDataConverter converter = new CarDataConverter();
 
-        ConsoleMenu menu = new ConsoleMenu(dataManager, validator, manualFill, randomFill, converter);
+        BubbleSorter<Car> sorter = new BubbleSorter<>();
+        GlobalSortConfig sortConfig = new GlobalSortConfig(sorter);
+        ConsoleMenu menu = new ConsoleMenu(dataManager, validator, manualFill, randomFill, converter, sortConfig);
         menu.run();
     }
 }

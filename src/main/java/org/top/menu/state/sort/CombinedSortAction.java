@@ -3,6 +3,7 @@ package org.top.menu.state.sort;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 import org.top.comparator.CarComparator;
 import org.top.config.GlobalSortConfig;
@@ -18,18 +19,19 @@ import org.top.strategy.Sorter;
 public final class CombinedSortAction implements MenuState {
     private final CarDataService dataService;
     private final InputValidator validator;
+    private final GlobalSortConfig sortConfig;
 
-    public CombinedSortAction(CarDataService dataService, InputValidator validator) {
-        this.dataService = dataService;
-        this.validator = validator;
+    public CombinedSortAction(CarDataService dataService, InputValidator validator, GlobalSortConfig sortConfig) {
+        this.dataService = Objects.requireNonNull(dataService);
+        this.validator = Objects.requireNonNull(validator);
+        this.sortConfig = Objects.requireNonNull(sortConfig);
     }
 
     @Override
-    public boolean handle() {
+    public Result<Boolean> handle() {
         List<Car> currentList = dataService.getCollection();
-        if (currentList == null || currentList.isEmpty()) {
-            System.out.println(AnsiColor.RED.colorize("[Ошибка]: Коллекция пуста. Сначала заполните её!"));
-            return true;
+        if (currentList.isEmpty()) {
+            return Result.failure("Коллекция пуста. Сначала заполните её!");
         }
 
         List<FieldSortOrder> sortOrders = new ArrayList<>();
@@ -46,8 +48,8 @@ public final class CombinedSortAction implements MenuState {
             }
 
             int selectedField = fieldResult.value();
-
             Sorter.Order fieldOrder;
+            
             while (true) {
                 System.out.print("Направление для этого поля (1 - По возрастанию, 2 - По убыванию): ");
                 Result<Integer> directionResult = validator.validateDirection(validator.readInt());
@@ -55,10 +57,7 @@ public final class CombinedSortAction implements MenuState {
                     System.out.println(AnsiColor.RED.colorize("[Ошибка]: " + directionResult.errorMessage()));
                     continue;
                 }
-                fieldOrder = switch (directionResult.value()) {
-                    case 2 -> Sorter.Order.REVERSE;
-                    default -> Sorter.Order.DIRECT;
-                };
+                fieldOrder = directionResult.value() == 2 ? Sorter.Order.REVERSE : Sorter.Order.DIRECT;
                 break;
             }
 
@@ -70,11 +69,12 @@ public final class CombinedSortAction implements MenuState {
                 }
             }
 
-            if (existingIndex != -1) {
-                System.out.println(AnsiColor.YELLOW.colorize("[Инфо]: Поле уже было в цепочке. Обновляем его направление."));
-                sortOrders.set(existingIndex, new FieldSortOrder(selectedField, fieldOrder));
+            FieldSortOrder newOrder = new FieldSortOrder(selectedField, fieldOrder);
+
+            if (existingIndex == -1) {
+                sortOrders.add(newOrder);
             } else {
-                sortOrders.add(new FieldSortOrder(selectedField, fieldOrder));
+                sortOrders.set(existingIndex, newOrder);
             }
 
             boolean shouldBreak = false;
@@ -91,24 +91,23 @@ public final class CombinedSortAction implements MenuState {
                 break;
             }
 
-            if (shouldBreak) {
+            if (shouldBreak)
+            {
                 break;
             }
         }
-
-        Comparator<Car> finalComparator = buildChainComparator(sortOrders);
-        Sorter<Car> activeSorter = GlobalSortConfig.getInstance().getSorter();
         
-        List<Car> sortedList = activeSorter.sort(currentList, finalComparator, Sorter.Order.DIRECT);
-        dataService.setCollection(sortedList);
+        Comparator<Car> finalComparator = buildChainComparator(sortOrders);
+        Sorter<Car> activeSorter = sortConfig.getSorter();
+        
+        activeSorter.sort(currentList, finalComparator, Sorter.Order.DIRECT);
 
-        System.out.println(AnsiColor.GREEN.colorize("[Успех]: Коллекция успешно отсортирована кастомной цепочкой полей!"));
-        return true;
+        System.out.println(AnsiColor.GREEN.colorize("[Успех]: Коллекция отсортирована!"));
+        return Result.success(true);
     }
 
     private Comparator<Car> buildChainComparator(List<FieldSortOrder> orders) {
         Comparator<Car> chain = prepareComparator(orders.get(0));
-
         for (int i = 1; i < orders.size(); i++) {
             chain = chain.thenComparing(prepareComparator(orders.get(i)));
         }
@@ -117,10 +116,7 @@ public final class CombinedSortAction implements MenuState {
 
     private Comparator<Car> prepareComparator(FieldSortOrder order) {
         Comparator<Car> base = getComparatorById(order.fieldId());
-        return switch (order.order()) {
-            case REVERSE -> base.reversed();
-            default -> base;
-        };
+        return order.order() == Sorter.Order.REVERSE ? base.reversed() : base;
     }
 
     private Comparator<Car> getComparatorById(int id) {
@@ -138,6 +134,6 @@ public final class CombinedSortAction implements MenuState {
 
     @Override
     public String getDescription() {
-        return "Базовая сортировка данных (Паттерн Стратегия с динамической цепочкой)";
+        return "Базовая сортировка данных";
     }
 }

@@ -1,14 +1,16 @@
 package org.top.data;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Stream;
 
 import org.top.model.Car;
 
 public final class CarDataManager implements CarDataService {
-    private List<Car> list;
+    private final List<Car> list;
 
     public CarDataManager(List<Car> list) {
-        this.list = list;
+        this.list = Objects.requireNonNull(list);
     }
 
     @Override
@@ -17,7 +19,12 @@ public final class CarDataManager implements CarDataService {
     }
 
     @Override
-    public void setCollection(List<Car> list) {
-        this.list = list;
+    public void add(Stream<Car> cars) {
+        cars.forEach(list::add);
+    }
+
+    @Override
+    public void clearCollection() {
+        this.list.clear();
     }
 }
