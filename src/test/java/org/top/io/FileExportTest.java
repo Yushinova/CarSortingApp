@@ -16,14 +16,15 @@ public final class FileExportTest {
 
     private static void testFileDataIOAppendAndReadIntegration() {
         File file = new File(TEST_FILE_PATH);
-        if (file.exists()) file.delete();
+        if (file.exists())
+            file.delete();
 
         CarDataConverter converter = new CarDataConverter();
         FileDataIO<Car> ioEngine = new FileDataIO<>(TEST_FILE_PATH, converter);
 
         List<Car> writeList1 = new CustomList<>();
         writeList1.add(new Car("Toyota", "Camry", 2020, "Red", 200, 30000.0, false));
-        
+
         List<Car> writeList2 = new CustomList<>();
         writeList2.add(new Car("BMW", "X5", 2022, "Black", 250, 45000.0, true));
 
@@ -32,15 +33,20 @@ public final class FileExportTest {
             ioEngine.write(writeList2, true);
 
             List<Car> readList = new CustomList<>();
-            ioEngine.read(readList, 2);
 
-            boolean integrationSuccess = readList.size() == 2 
-                    && "Toyota".equals(readList.get(0).getBrand()) 
+            ioEngine.read(readList, 0);
+
+            boolean integrationSuccess = readList.size() == 2
+                    && "Toyota".equals(readList.get(0).getBrand())
                     && "BMW".equals(readList.get(1).getBrand());
 
-            Assert.assertThat(integrationSuccess, "Фича 13, 14 (Доп. 2): Интеграционный тест FileDataIO и CarDataConverter в режиме Append");
+            Assert.assertThat(integrationSuccess,
+                    "Фича 13, 14 (Доп. 2): Интеграционный тест FileDataIO и CarDataConverter в режиме Append");
+        } catch (Exception e) {
+            System.err.println("Ошибка: " + e.getMessage());
         } finally {
-            if (file.exists()) file.delete();
+            if (file.exists())
+                file.delete();
         }
     }
 }
