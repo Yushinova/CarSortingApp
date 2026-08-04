@@ -44,8 +44,12 @@ public class CarDataConverter implements DataConverter<Car> {
                     .setIsNew(Boolean.parseBoolean(carFields[6]))
                     .build();
 
+        } catch (NumberFormatException e) {
+            System.err.println("Number format error in line: " + line);
+            return null;
         } catch (IllegalArgumentException e) {
-            System.out.println("Parsing error" + e.getMessage());
+            System.err.println("Validation error for line: " + line);
+            System.err.println("Message: " + e.getMessage());
             return null;
         }
 

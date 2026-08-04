@@ -17,7 +17,6 @@ public final class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         InputValidator validator = new InputValidator(scanner);
-
         CustomList<Car> sharedCustomList = new CustomList<>();
         CarDataManager dataManager = new CarDataManager(sharedCustomList);
 

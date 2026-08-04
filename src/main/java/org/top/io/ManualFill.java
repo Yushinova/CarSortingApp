@@ -4,6 +4,7 @@ import org.top.builder.CarBuilder;
 import org.top.model.Car;
 import org.top.strategy.FillStrategy;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -19,13 +20,13 @@ public class ManualFill implements FillStrategy<Car> {
     public List<Car> fill(List<Car> list, int size) {
         for (int i = 0; i < size; i++) {
             boolean success = false;
-            while (!success ) {
+            while (!success) {
 
                 String brand = customReadString("Input brand:");
-                if (canceled(brand,list)) return list;
+                if (canceled(brand, list)) return list;
                 String model = customReadString("Input model:");
                 if (canceled(model, list)) return list;
-                Integer year =  customReadInt("Input year:");
+                Integer year = customReadInt("Input year:");
                 if (canceled(year, list)) return list;
                 String color = customReadString("Input color:");
                 if (canceled(color, list)) return list;
@@ -35,22 +36,22 @@ public class ManualFill implements FillStrategy<Car> {
                 if (canceled(price, list)) return list;
                 Boolean isNew = customReadBoolean("Input isNew:");
                 if (canceled(isNew, list)) return list;
-
-                Car car = new CarBuilder()
-                        .setBrand(brand)
-                        .setModel(model)
-                        .setYear(year)
-                        .setColor(color)
-                        .setPower(power)
-                        .setPrice(price)
-                        .setIsNew(isNew)
-                        .build();
-                if (car != null) {
+                try {
+                    Car car = new CarBuilder()
+                            .setBrand(brand)
+                            .setModel(model)
+                            .setYear(year)
+                            .setColor(color)
+                            .setPower(power)
+                            .setPrice(price)
+                            .setIsNew(isNew)
+                            .build();
                     list.add(car);
                     success = true;
-                } else {
-                    System.out.println("Validation error." + "\nReenter all fields.");
+                } catch (IllegalArgumentException e) {
+                    System.err.println("Validation error: " + e.getMessage());
                 }
+
             }
         }
         return list;

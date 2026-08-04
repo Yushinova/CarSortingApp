@@ -20,7 +20,7 @@ public final class CarDataConverterTest {
                 && "Camry".equals(car.getModel()) 
                 && car.getYear() == 2020;
 
-        Assert.assertThat(isValid, "CarDataConverter: Корректный парсинг строки из cars_database.txt");
+        Assert.assertThat(isValid, "CarDataConverter: Корректный парсинг строки из cars.txt");
     }
 
     private static void testToStringConversion() {
